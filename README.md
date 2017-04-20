@@ -8,9 +8,9 @@ How to reduce the compile time of Swift
 
 ## Steps to reduce building time
 ### Xcode flag
-1. Add User-Defined setting SWIFT_WHOLE_MODULE_OPTIMIZATION = YES (Most affected, reduce compile time from 12 minutes to 4.5 minutes)
-Some people say that this flag does not work anymore on Xcode 8.3, I still haven't verify it yet
-1. Add User-Defined setting HEADERMAP_USES_VFS = YE1
+1. Add User-Defined setting `SWIFT_WHOLE_MODULE_OPTIMIZATION = YES` (Most affected, reduce compile time from 12 minutes to 4.5 minutes)
+>Some people say that this flag does not work anymore on Xcode 8.3, I still haven't verify it yet
+1. Add User-Defined setting `HEADERMAP_USES_VFS = YE1`
 1. Turn on `Build Active Architecture Only = YES` (Only apply for debug config)
 1. Use plain `DWARF` instead of `DWARF with dSYM File` as your `Debug Information Format`
 1. Use tool (https://github.com/RobertGummesson/BuildTimeAnalyzer-for-Xcode) to analyze build time of the project (You can manually use terminal to list out all the compile time, but I prefer using tools since it is more visualization)

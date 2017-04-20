@@ -8,11 +8,23 @@ How to reduce the compile time of Swift
 
 ## Steps to reduce building time
 ### Xcode flag
+1. Add User-Defined setting SWIFT_WHOLE_MODULE_OPTIMIZATION = YES (Most affected, reduce compile time from 12 minutes to 4.5 minutes)
+Some people say that this flag does not work anymore on Xcode 8.3, I still haven't verify it yet
+1. Add User-Defined setting HEADERMAP_USES_VFS = YE1
+1. Turn on `Build Active Architecture Only = YES` (Only apply for debug config)
+1. Use plain `DWARF` instead of `DWARF with dSYM File` as your `Debug Information Format`
+1. Use tool (https://github.com/RobertGummesson/BuildTimeAnalyzer-for-Xcode) to analyze build time of the project (You can manually use terminal to list out all the compile time, but I prefer using tools since it is more visualization)
+ >- Download and Archive the project BuildTimeAnalyzer
+ >- Added the `-Xfrontend -debug-time-function-bodies` flag to my `Other Swift Flags` in main target's build settings
+ >- Build the project
+6. Move some utilities, stand-alone codes to a separate local pod to reduce the number of compiled sources in main project (I've reduced from 647 files to 585, yet the compile time is not reduced much (sad))
+1. Add `-Xfrontend -warn-long-function-bodies=100` flag to `Other Swift Flags` to get warnings from functions that take longer 100 ms to compiles
+
 ### Code Convention
 1. Create dictionary
-2. Concatenate string
-3. Concatenate array
-4. Lazy properties
+1. Concatenate string
+1. Concatenate array
+1. Lazy properties
 
 ## References
 - http://stackoverflow.com/questions/39547197/xcode-8-0-swift-3-0-slow-indexing-and-building

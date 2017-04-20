@@ -66,8 +66,49 @@ took 1,6 seconds to compile
 item.text = [item.text, " ", pickerText, " ", (attribute?.Prefix ?? ""), inputText, (attribute?.Suffix ?? "")].joined();
 ```
 took 1,6 seconds to compile
-3. Concatenate array
-4. Lazy properties
+3. Concatenate array<br/>
+Same as concatenating string, we should change:
+```
+labelNames = Array(systemNames[0..<count]) + [systemNames.last!]
+```
+to
+```
+labelNames = Array(systemNames[0..<count])
+labelNames.append(systemNames.last!)
+```
+4. Lazy properties<br/>
+Change from:
+```
+private(set) lazy var chartViewColors: [UIColor] = [
+    self.chartColor,
+    UIColor(red: 86/255, green: 84/255, blue: 124/255, alpha: 1),
+    UIColor(red: 80/255, green: 88/255, blue: 92/255, alpha: 1),
+    UIColor(red: 126/255, green: 191/255, blue: 189/255, alpha: 1),
+    UIColor(red: 161/255, green: 77/255, blue: 63/255, alpha: 1),
+    UIColor(red: 235/255, green: 185/255, blue: 120/255, alpha: 1),
+    UIColor(red: 100/255, green: 126/255, blue: 159/255, alpha: 1),
+    UIColor(red: 160/255, green: 209/255, blue: 109/255, alpha: 1),
+    self.backgroundGradientView.upperColor
+]
+```
+to
+```
+private(set) lazy var chartViewColors: [UIColor] = self.createChartViewColors()
+
+private let createChartViewColors = { () -> [UIColor] in
+    let colors = [
+        UIColor(red: 86/255, green: 84/255, blue: 124/255, alpha: 1),
+        UIColor(red: 80/255, green: 88/255, blue: 92/255, alpha: 1),
+        UIColor(red: 126/255, green: 191/255, blue: 189/255, alpha: 1),
+        UIColor(red: 161/255, green: 77/255, blue: 63/255, alpha: 1),
+        UIColor(red: 235/255, green: 185/255, blue: 120/255, alpha: 1),
+        UIColor(red: 100/255, green: 126/255, blue: 159/255, alpha: 1),
+        UIColor(red: 160/255, green: 209/255, blue: 109/255, alpha: 1),
+    ]
+    return colors
+}
+```
+>More conventions can be found here https://medium.com/@RobertGummesson/regarding-swift-build-time-optimizations-fc92cdd91e31 and here https://medium.com/swift-programming/swift-build-time-optimizations-part-2-37b0a7514cbe
 
 ## References
 - http://stackoverflow.com/questions/39547197/xcode-8-0-swift-3-0-slow-indexing-and-building

@@ -9,22 +9,65 @@ How to reduce the compile time of Swift
 ## Steps to reduce building time
 ### Xcode flag
 1. Add User-Defined setting `SWIFT_WHOLE_MODULE_OPTIMIZATION = YES` (Most affected, reduce compile time from 12 minutes to 4.5 minutes)
->Some people say that this flag does not work anymore on Xcode 8.3, I still haven't verify it yet
+>Some people say that this flag does not work anymore on Xcode 8.3, I still haven't verified it yet
 2. Add User-Defined setting `HEADERMAP_USES_VFS = YE1`
 1. Turn on `Build Active Architecture Only = YES` (Only apply for debug config)
 1. Use plain `DWARF` instead of `DWARF with dSYM File` as your `Debug Information Format`
 1. Use tool (https://github.com/RobertGummesson/BuildTimeAnalyzer-for-Xcode) to analyze build time of the project (You can manually use terminal to list out all the compile time, but I prefer using tools since it is more visualization)
- >- Download and Archive the project BuildTimeAnalyzer
- >- Added the `-Xfrontend -debug-time-function-bodies` flag to my `Other Swift Flags` in main target's build settings
- >- Build the project
+>- Download and Archive the project BuildTimeAnalyzer
+>- Added the `-Xfrontend -debug-time-function-bodies` flag to my `Other Swift Flags` in main target's build settings
+>- Build the project
 6. Move some utilities, stand-alone codes to a separate local pod to reduce the number of compiled sources in main project (I've reduced from 647 files to 585, yet the compile time is not reduced much (sad))
 1. Add `-Xfrontend -warn-long-function-bodies=100` flag to `Other Swift Flags` to get warnings from functions that take longer 100 ms to compiles
+>Note: Steps (2) to (6) only cut off build time nearly half a minute, the majority is reduced by applying the (1)
 
 ### Code Convention
-1. Create dictionary
-1. Concatenate string
-1. Concatenate array
-1. Lazy properties
+1. Create dictionary<br/>
+Change from
+```
+let params: [String:String] = [
+        "email": email ?? self.email,
+        "clave": password,
+        "tipo_documento": documentType?.rawValue ?? self.typeDocument.rawValue,
+        "documento": number ?? self.documentNumber,
+        "nombre": name ?? self.name,
+        "apellidos": lastName ?? self.lastName,
+        "fecha_nacimiento": birth?.parse() ?? self.birthDate.parse(),
+        "genero": genre?.rawValue ?? self.genre.rawValue,
+        "telefono_movil": cel ?? self.cel,
+        "direccion": address ?? self.address
+    ]
+```
+to
+```
+var params: [String:String] = [:]
+        params["email"] = email ?? self.email
+        params["clave"] = password
+        params["tipo_documento"] = documentType?.rawValue ?? self.typeDocument.rawValue
+        params["documento"] = number ?? self.documentNumber
+        params["nombre"] = name ?? self.name
+        params["apellidos"] = lastName ?? self.lastName
+        params["fecha_nacimiento"] = birth?.parse() ?? self.birthDate.parse()
+        params["genero"] = genre?.rawValue ?? self.genre.rawValue
+        params["telefono_movil"] = cel ?? self.cel
+        params["direccion"] = address ?? self.address
+```
+2. Concatenate string<br/>
+Avoid using operator "+" to append string
+```
+item.text = item.text + " " + pickerText + " " + (attribute?.Prefix ?? "") + inputText + (attribute?.Suffix ?? "")
+```
+took 8-10 seconds to compile
+```
+item.text = "\(item.text) \(pickerText) \(attribute?.Prefix ?? "")\(inputText)\(attribute?.Suffix ?? "")"
+```
+took 1,6 seconds to compile
+```
+item.text = [item.text, " ", pickerText, " ", (attribute?.Prefix ?? ""), inputText, (attribute?.Suffix ?? "")].joined();
+```
+took 1,6 seconds to compile
+3. Concatenate array
+4. Lazy properties
 
 ## References
 - http://stackoverflow.com/questions/39547197/xcode-8-0-swift-3-0-slow-indexing-and-building

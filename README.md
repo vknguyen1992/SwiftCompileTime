@@ -22,7 +22,7 @@ How to reduce the compile time of Swift
 >Note: Steps (2) to (6) only cut off build time nearly half a minute, the majority is reduced by applying the (1)
 
 ### Code Convention
-1. Create dictionary<br/>
+#### 1. Create dictionary<br/>
 Change from
 ```
 let params: [String:String] = [
@@ -52,7 +52,7 @@ var params: [String:String] = [:]
         params["telefono_movil"] = cel ?? self.cel
         params["direccion"] = address ?? self.address
 ```
-2. Concatenate string<br/>
+#### 2. Concatenate string<br/>
 Avoid using operator "+" to append string
 ```
 item.text = item.text + " " + pickerText + " " + (attribute?.Prefix ?? "") + inputText + (attribute?.Suffix ?? "")
@@ -66,7 +66,7 @@ took 1,6 seconds to compile
 item.text = [item.text, " ", pickerText, " ", (attribute?.Prefix ?? ""), inputText, (attribute?.Suffix ?? "")].joined();
 ```
 took 1,6 seconds to compile
-3. Concatenate array<br/>
+#### 3. Concatenate array<br/>
 Same as concatenating string, we should change:
 ```
 labelNames = Array(systemNames[0..<count]) + [systemNames.last!]
@@ -76,7 +76,7 @@ to
 labelNames = Array(systemNames[0..<count])
 labelNames.append(systemNames.last!)
 ```
-4. Lazy properties<br/>
+#### 4. Lazy properties<br/>
 Change from:
 ```
 private(set) lazy var chartViewColors: [UIColor] = [

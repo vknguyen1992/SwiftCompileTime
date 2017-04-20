@@ -7,7 +7,12 @@ How to reduce the compile time of Swift
 - Release: N/A
 
 ## Steps to reduce building time
-
+### Xcode flag
+### Code Convention
+1. Create dictionary
+2. Concatenate string
+3. Concatenate array
+4. Lazy properties
 
 ## References
 - http://stackoverflow.com/questions/39547197/xcode-8-0-swift-3-0-slow-indexing-and-building
